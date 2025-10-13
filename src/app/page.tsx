@@ -1,19 +1,19 @@
 "use client";
+
 import { useChat, UIMessage } from "@ai-sdk/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useMessages } from "@/lib/providers/chatProvider";
 import { TextBox } from "@/lib/components/textbox";
 
-export default function Chat({
-  initialMessages,
-}: {
-  initialMessages: UIMessage[];
-}) {
+export default function Chat() {
   const [input, setInput] = useState("");
   const { messages, sendMessage, setMessages } = useChat();
+  const { history } = useMessages();
 
-  setMessages(initialMessages);
+  useEffect(() => {
+    setMessages(history);
+  }, [history]);
 
-  console.log(messages);
   return (
     <div className="flex flex-col w-full max-w-md py-24 mx-auto stretch">
       {messages.map((message) => (
@@ -27,8 +27,6 @@ export default function Chat({
           })}
         </div>
       ))}
-
-      <TextBox />
       <form
         onSubmit={(e) => {
           e.preventDefault();
