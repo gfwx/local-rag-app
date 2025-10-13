@@ -1,3 +1,5 @@
+// Used for providing message / chat history from the server (layout) to the page.
+
 import { createContext, useContext, useState } from "react";
 import { UIMessage } from "ai";
 
