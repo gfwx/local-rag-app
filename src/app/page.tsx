@@ -1,18 +1,32 @@
 "use client";
 
-import { useChat, UIMessage } from "@ai-sdk/react";
+import { UIMessage, useChat } from "@ai-sdk/react";
 import { useEffect, useState } from "react";
 import { useMessages } from "@/lib/providers/chatProvider";
-import { TextBox } from "@/lib/components/textbox";
 
 export default function Chat() {
   const [input, setInput] = useState("");
-  const { messages, sendMessage, setMessages } = useChat();
+  const [error, setError] = useState<string | null>(null);
+
+  const { messages, sendMessage, setMessages, status } = useChat();
   const { history } = useMessages();
 
   useEffect(() => {
     setMessages(history);
   }, [history]);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError(null);
+    const userInput = input;
+    try {
+      await sendMessage({ text: userInput });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
+    } finally {
+      setInput("");
+    }
+  };
 
   return (
     <div className="flex flex-col w-full max-w-md py-24 mx-auto stretch">
@@ -27,20 +41,19 @@ export default function Chat() {
           })}
         </div>
       ))}
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          sendMessage({ text: input });
-          setInput("");
-        }}
-      >
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      <form onSubmit={handleSubmit}>
+        {status !== "ready" && <p color="blue">Loading AI Response</p>}
         <input
           className="fixed dark:bg-zinc-900 bottom-0 w-full max-w-md p-2 mb-8 border border-zinc-300 dark:border-zinc-800 rounded shadow-xl"
           value={input}
           placeholder="Say something..."
+          disabled={status !== "ready"}
           onChange={(e) => setInput(e.currentTarget.value)}
         />
       </form>
+
+      <button onClick={() => console.log(messages)}> Click me </button>
     </div>
   );
 }
