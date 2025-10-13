@@ -1,4 +1,4 @@
-import { createOllama, ollama } from "ollama-ai-provider-v2";
+import { createOllama } from "ollama-ai-provider-v2";
 import { streamText, UIMessage, convertToModelMessages } from "ai";
 
 export const maxDuration = 30;
