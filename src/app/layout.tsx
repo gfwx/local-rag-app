@@ -12,10 +12,6 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   /**
-   * hardcoded stuff
-   */
-
-  /**
    * In a realistic scenario, the user object would be
    * fetched from the authentication server via middleware
    * the middleware would then propagate auth state to the app via layout.
@@ -23,33 +19,6 @@ export default async function RootLayout({
   const user = {
     id: process.env.DEMO_USER_ID,
   };
-
-  /**
-   * Same thing here
-   */
-  const chatId = "04fec424-0501-4ab0-b9fa-44a63b826849";
-
-  let messages: UIMessage[] = [];
-  try {
-    const headersList = await headers();
-    const host = headersList.get("host") || "localhost:3000";
-    const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
-    const baseUrl = `${protocol}://${host}`;
-    const response = await fetch(
-      `${baseUrl}/api/db/messages?user_id=${user.id}&chat_id=${chatId}`,
-      {
-        method: "GET",
-      },
-    );
-
-    if (response.ok) {
-      const data = await response.json();
-      messages = data.messages;
-    }
-  } catch (error) {
-    console.error("Failed to fetch messages:", error);
-    messages = [];
-  }
 
   let chats: { id: string; title: string; createdAt: Date; updatedAt: Date }[] =
     [];
@@ -66,12 +35,11 @@ export default async function RootLayout({
       const data = await response.json();
       chats = data.chats;
     }
-
-    console.log(chats);
   } catch (error) {
     console.error("Failed to fetch chats:", error);
     chats = [];
   }
+
   return (
     <html>
       <body>
