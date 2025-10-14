@@ -1,6 +1,5 @@
 "use client";
 
-import { Separator } from "@/components/ui/separator";
 import Logomark from "../../public/logomark.svg";
 import Wordmark from "../../public/wordmark.svg";
 import Image from "next/image";
