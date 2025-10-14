@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getDb } from "@/lib/mongo";
 export const runtime = "nodejs";
 
-async function GET(req: NextRequest) {
+export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("user_id");
 
@@ -12,7 +12,7 @@ async function GET(req: NextRequest) {
 
   try {
     const db = await getDb();
-    const collection = db.collection("messages");
+    const collection = db.collection("chats");
 
     const chatsCursor = await collection.find({ user_id: userId }).toArray();
 

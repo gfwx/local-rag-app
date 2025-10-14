@@ -4,6 +4,8 @@ import { ChatProvider } from "@/lib/providers/chatProvider";
 import { AuthProvider } from "@/lib/providers/authProvider";
 import { UIMessage } from "ai";
 import { headers } from "next/headers";
+import { ChatSidebar } from "@/lib/components/Sidebar";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 export default async function RootLayout({
   children,
@@ -49,12 +51,44 @@ export default async function RootLayout({
     console.error("Failed to fetch messages:", error);
     messages = [];
   }
+
+  let chats: { id: string; title: string; createdAt: Date; updatedAt: Date }[] =
+    [];
+  try {
+    const headersList = await headers();
+    const host = headersList.get("host") || "localhost:3000";
+    const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
+    const baseUrl = `${protocol}://${host}`;
+    const response = await fetch(`${baseUrl}/api/db/chats?user_id=${user.id}`, {
+      method: "GET",
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      chats = data.chats;
+    }
+
+    console.log(chats);
+  } catch (error) {
+    console.error("Failed to fetch chats:", error);
+    chats = [];
+  }
   return (
     <ChatProvider chatHistory={messages}>
       <AuthProvider user={user}>
-        <html lang="en">
-          <body>{children}</body>
-        </html>
+        <SidebarProvider>
+          <html lang="en">
+            <body className="overflow-hidden">
+              <div className="flex h-screen">
+                <ChatSidebar chats={chats} />
+                <main className="flex-1 pl-[100px] overflow-auto">
+                  <SidebarTrigger />
+                  {children}
+                </main>
+              </div>
+            </body>
+          </html>
+        </SidebarProvider>
       </AuthProvider>
     </ChatProvider>
   );
