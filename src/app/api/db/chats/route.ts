@@ -31,3 +31,31 @@ export async function GET(req: NextRequest) {
     );
   }
 }
+
+export async function POST(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
+  const userId = searchParams.get("user_id");
+
+  if (!userId) {
+    return NextResponse.json({ error: "Missing user id!" }, { status: 400 });
+  }
+
+  try {
+    const db = await getDb();
+    const collection = db.collection("chats");
+
+    const chat = await collection.insertOne({
+      user_id: userId,
+      title: "New Chat",
+      messages: [],
+    });
+
+    return NextResponse.json({ id: chat.insertedId.toString() });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
+  }
+}

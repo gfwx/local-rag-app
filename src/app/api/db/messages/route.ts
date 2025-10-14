@@ -40,3 +40,29 @@ export async function GET(req: NextRequest) {
     );
   }
 }
+
+export async function POST(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
+  const userId = searchParams.get("user_id");
+  const chatId = searchParams.get("chat_id");
+  const { message } = await req.json();
+
+  if (!userId || !chatId || !message) {
+    return NextResponse.json(
+      { error: "user_id, chat_id, and message are required" },
+      { status: 400 },
+    );
+  }
+
+  const db = await getDb();
+  const collection = db.collection("messages");
+
+  // Insert the new message into the database
+  const result = await collection.insertOne({
+    user_id: userId,
+    chat_id: chatId,
+    message,
+  });
+
+  return NextResponse.json({ message: message });
+}

@@ -2,6 +2,8 @@
 
 import { useChat } from "@ai-sdk/react";
 import { useEffect, useState, useRef } from "react";
+import { useParams } from "next/navigation";
+import { v4 as uuidv4 } from "uuid";
 import { useMessages } from "@/lib/providers/chatProvider";
 import { TextBoxButton } from "@/lib/components/TextboxBtn";
 import { ChatBubble } from "@/lib/components/ChatBubble";
@@ -19,15 +21,31 @@ export default function Chat() {
    * I'm not sure there's a way to fix this.
    */
 
+  const user = useAuth();
+  const params = useParams();
+  const chatId = params.slug as string;
   const [input, setInput] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isAtBottom, setIsAtBottom] = useState(true);
   const [previousScrollTop, setPreviousScrollTop] = useState(0);
-  const { messages, sendMessage, setMessages, status, stop } = useChat();
+  const { messages, sendMessage, setMessages, status, stop } = useChat({
+    onFinish: ({ message: assistantMessage }) => {
+      fetch(`/api/db/messages?user_id=${user.id}&chat_id=${chatId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: assistantMessage,
+          user_id: user.id,
+          chat_id: chatId,
+        }),
+      }).catch(console.error);
+    },
+  });
   const { history } = useMessages();
 
   const messagesRef = useRef<HTMLDivElement>(null);
-  const user = useAuth();
 
   // Message history is passed from the layout component and stored as state here.
   useEffect(() => {
@@ -78,6 +96,23 @@ export default function Chat() {
       // Prevent sending the message if there's no text. For some reason this just causes the model to freeze up.
       if (userInput.trim() !== "") {
         await sendMessage({ text: userInput });
+        const userMessageId = uuidv4();
+        const userMessage = {
+          id: userMessageId,
+          role: "user" as const,
+          parts: [{ type: "text" as const, text: userInput }],
+        };
+        fetch(`/api/db/messages?user_id=${user.id}&chat_id=${chatId}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            message: userMessage,
+            user_id: user.id,
+            chat_id: chatId,
+          }),
+        }).catch(console.error);
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
