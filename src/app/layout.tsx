@@ -1,6 +1,5 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { ChatProvider } from "@/lib/providers/chatProvider";
 import { AuthProvider } from "@/lib/providers/authProvider";
 import { UIMessage } from "ai";
 import { headers } from "next/headers";
@@ -74,22 +73,15 @@ export default async function RootLayout({
     chats = [];
   }
   return (
-    <ChatProvider chatHistory={messages}>
-      <AuthProvider user={user}>
-        <SidebarProvider>
-          <html lang="en">
-            <body className="overflow-hidden">
-              <div className="flex h-screen">
-                <ChatSidebar chats={chats} />
-                <main className="flex-1 pl-[100px] overflow-auto">
-                  <SidebarTrigger />
-                  {children}
-                </main>
-              </div>
-            </body>
-          </html>
-        </SidebarProvider>
-      </AuthProvider>
-    </ChatProvider>
+    <html>
+      <body>
+        <AuthProvider user={user}>
+          <SidebarProvider>
+            <ChatSidebar chats={chats} />
+            <main className="flex-1 mx-auto overflow-auto">{children}</main>
+          </SidebarProvider>
+        </AuthProvider>
+      </body>
+    </html>
   );
 }
