@@ -1,6 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ChatProvider } from "@/lib/providers/chatProvider";
+import { AuthProvider } from "@/lib/providers/authProvider";
 import { UIMessage } from "ai";
 
 export default function RootLayout({
@@ -10,6 +11,19 @@ export default function RootLayout({
 }>) {
   /**
    * hardcoded stuff
+   */
+
+  /**
+   * In a realistic scenario, the user object would be
+   * fetched from the authentication server via middleware
+   * the middleware would then propagate auth state to the app via layout.
+   */
+  const user = {
+    id: process.env.DEMO_USER_ID,
+  };
+
+  /**
+   * Similarly, messages would also be fetched from a GET request.
    */
   const messages: UIMessage[] = [
     {
@@ -63,9 +77,11 @@ export default function RootLayout({
   ];
   return (
     <ChatProvider chatHistory={messages}>
-      <html lang="en">
-        <body>{children}</body>
-      </html>
+      <AuthProvider user={user}>
+        <html lang="en">
+          <body>{children}</body>
+        </html>
+      </AuthProvider>
     </ChatProvider>
   );
 }

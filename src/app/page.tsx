@@ -8,6 +8,7 @@ import { TextBoxButton } from "@/lib/components/TextboxBtn";
 import { ChatBubble } from "@/lib/components/ChatBubble";
 import Logomark from "../../public/logomark.svg";
 import Image from "next/image";
+import { useAuth } from "@/lib/providers/authProvider";
 
 export default function Chat() {
   /**
@@ -24,6 +25,7 @@ export default function Chat() {
   const { history } = useMessages();
 
   const messagesRef = useRef<HTMLDivElement>(null);
+  const user = useAuth();
 
   // Message history is passed from the layout component and stored as state here.
   useEffect(() => {
