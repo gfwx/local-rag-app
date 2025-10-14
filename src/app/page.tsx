@@ -17,6 +17,7 @@ export default function Chat() {
    * Results in loading lag despite chats being a client UI.
    * I'm not sure there's a way to fix this.
    */
+
   const [input, setInput] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isAtBottom, setIsAtBottom] = useState(true);
