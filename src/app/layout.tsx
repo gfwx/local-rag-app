@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/lib/providers/authProvider";
@@ -5,6 +6,11 @@ import { UIMessage } from "ai";
 import { headers } from "next/headers";
 import { ChatSidebar } from "@/lib/components/Sidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+
+export const metadata: Metadata = {
+  title: "QuickSilver Chat Demo",
+  description: "A chat demo built with Next.js and Tailwind CSS",
+};
 
 export default async function RootLayout({
   children,

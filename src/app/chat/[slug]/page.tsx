@@ -1,14 +1,15 @@
 "use client";
 
-import { UIMessage, useChat } from "@ai-sdk/react";
+import { useChat } from "@ai-sdk/react";
 import { useEffect, useState, useRef } from "react";
 import { useMessages } from "@/lib/providers/chatProvider";
-import { ArrowUpIcon } from "@radix-ui/react-icons";
 import { TextBoxButton } from "@/lib/components/TextboxBtn";
 import { ChatBubble } from "@/lib/components/ChatBubble";
 import Logomark from "../../../../public/logomark.svg";
+import Wordmark from "../../../../public/wordmark.svg";
 import Image from "next/image";
 import { useAuth } from "@/lib/providers/authProvider";
+import Link from "next/link";
 
 export default function Chat() {
   /**
@@ -93,10 +94,10 @@ export default function Chat() {
   return (
     <div className="flex items-center flex-col w-full max-w-4xl pt-4 mx-auto stretch gap-8">
       <div className="flex w-full justify-between gap-4 py-4 border-b-2 border-blue-700">
-        <Image src={Logomark} alt="Logo" width={18} height={18} />
-        <p className="font-sans tracking-tight text-blue-700 font-bold">
-          Chat Demo
-        </p>
+        <Link href="/">
+          <Image src={Logomark} alt="Logo" width={18} height={18} />
+        </Link>
+        <Image src={Wordmark} alt="Logo" height={18} width={100} />
       </div>
       {/*The main scroll section that contains chats.*/}
       <section
