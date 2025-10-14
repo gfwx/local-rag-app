@@ -62,7 +62,3 @@ To add RAG:
 ## Deployment
 
 For production, build and start the app. Ensure Ollama is accessible. For cloud deployment, configure Ollama or switch to a hosted model provider.
-
-## License
-
-MIT (or specify as needed).
