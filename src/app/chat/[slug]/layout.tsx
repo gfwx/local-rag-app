@@ -41,8 +41,6 @@ export default async function RootLayout({
     messages = [];
   }
 
-  console.log(messages);
-
   return (
     <ChatProvider chatHistory={messages}>
       <div>{children}</div>

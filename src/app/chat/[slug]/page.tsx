@@ -1,17 +1,16 @@
 "use client";
 
-import { useChat } from "@ai-sdk/react";
+import { UIMessage, useChat } from "@ai-sdk/react";
 import { useEffect, useState, useRef } from "react";
 import { useParams } from "next/navigation";
 import { v4 as uuidv4 } from "uuid";
 import { useMessages } from "@/lib/providers/chatProvider";
+import { ArrowUpIcon } from "@radix-ui/react-icons";
 import { TextBoxButton } from "@/lib/components/TextboxBtn";
 import { ChatBubble } from "@/lib/components/ChatBubble";
 import Logomark from "../../../../public/logomark.svg";
-import Wordmark from "../../../../public/wordmark.svg";
 import Image from "next/image";
 import { useAuth } from "@/lib/providers/authProvider";
-import Link from "next/link";
 
 export default function Chat() {
   /**
@@ -29,8 +28,8 @@ export default function Chat() {
   const [isAtBottom, setIsAtBottom] = useState(true);
   const [previousScrollTop, setPreviousScrollTop] = useState(0);
   const { messages, sendMessage, setMessages, status, stop } = useChat({
-    onFinish: ({ message: assistantMessage }) => {
-      fetch(`/api/db/messages?user_id=${user.id}&chat_id=${chatId}`, {
+    onFinish: async ({ message: assistantMessage }) => {
+      await fetch(`/api/db/messages?user_id=${user.id}&chat_id=${chatId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -129,15 +128,15 @@ export default function Chat() {
   return (
     <div className="flex items-center flex-col w-full max-w-4xl pt-4 mx-auto stretch gap-8">
       <div className="flex w-full justify-between gap-4 py-4 border-b-2 border-blue-700">
-        <Link href="/">
-          <Image src={Logomark} alt="Logo" width={18} height={18} />
-        </Link>
-        <Image src={Wordmark} alt="Logo" height={18} width={100} />
+        <Image src={Logomark} alt="Logo" width={18} height={18} />
+        <p className="font-sans tracking-tight text-blue-700 font-bold">
+          Chat Demo
+        </p>
       </div>
       {/*The main scroll section that contains chats.*/}
       <section
         ref={messagesRef}
-        className="messages flex-1 overflow-y-auto flex flex-col gap-8 max-h-[calc(100vh-12rem)] no-scrollbar pb-24"
+        className="messages w-full flex-1 overflow-y-auto flex flex-col gap-8 max-h-[calc(100vh-12rem)] no-scrollbar pb-24"
       >
         {messages.map((message) => (
           <div
