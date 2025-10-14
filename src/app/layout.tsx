@@ -35,7 +35,7 @@ export default async function RootLayout({
     const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
     const baseUrl = `${protocol}://${host}`;
     const response = await fetch(
-      `${baseUrl}/api/history?user_id=${user.id}&chat_id=${chatId}`,
+      `${baseUrl}/api/db/messages?user_id=${user.id}&chat_id=${chatId}`,
       {
         method: "GET",
       },
