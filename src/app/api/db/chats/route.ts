@@ -15,7 +15,10 @@ export async function GET(req: NextRequest) {
     const db = await getDb();
     const collection = db.collection("chats");
 
-    const chatsCursor = await collection.find({ user_id: userId }).toArray();
+    const chatsCursor = await collection
+      .find({ user_id: userId })
+      .sort({ updatedAt: -1 })
+      .toArray();
 
     const chats = chatsCursor.map((chat) => ({
       id: chat._id.toString(),
@@ -88,16 +91,16 @@ export async function PATCH(req: NextRequest) {
 
     // Update chat (set updatedAt always)
     const result = await collection.findOneAndUpdate(
-      { user_id: userId, id: chatId },
+      { user_id: userId, _id: new ObjectId(chatId) },
       {
         $set: {
-          ...(title && { title }),
           updatedAt: new Date(),
+          title: title,
         },
       },
       {
         returnDocument: "after",
-        projection: { id: 1, title: 1, updatedAt: 1 },
+        projection: { _id: 1, title: 1, updatedAt: 1 },
       },
     );
 
