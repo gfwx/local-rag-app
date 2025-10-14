@@ -8,6 +8,9 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  /**
+   * hardcoded stuff
+   */
   const messages: UIMessage[] = [
     {
       id: "1",

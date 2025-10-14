@@ -4,7 +4,7 @@ import { UIMessage, useChat } from "@ai-sdk/react";
 import { useEffect, useState, useRef } from "react";
 import { useMessages } from "@/lib/providers/chatProvider";
 import { ArrowUpIcon } from "@radix-ui/react-icons";
-import { TextBoxButton } from "@/lib/components/textbox_button";
+import { TextBoxButton } from "@/lib/components/TextboxBtn";
 import { ChatBubble } from "@/lib/components/ChatBubble";
 
 export default function Chat() {
