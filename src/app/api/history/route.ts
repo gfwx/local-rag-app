@@ -6,7 +6,8 @@ export const runtime = "nodejs";
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-    const { userId, chatId } = await req.json();
+    const userId = searchParams.get("user_id");
+    const chatId = searchParams.get("chat_id");
 
     if (!userId || !chatId) {
       return NextResponse.json(
