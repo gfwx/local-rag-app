@@ -90,7 +90,7 @@ export default function Chat() {
       {/*The main scroll section that contains chats.*/}
       <section
         ref={messagesRef}
-        className="messages flex-1 overflow-y-auto flex flex-col gap-8 max-h-[calc(100vh-12rem)]"
+        className="messages flex-1 overflow-y-auto flex flex-col gap-8 max-h-[calc(100vh-12rem)] no-scrollbar"
       >
         {messages.map((message) => (
           <div
@@ -112,6 +112,7 @@ export default function Chat() {
             </div>
           )}
       </section>
+
       {error && <p style={{ color: "red" }}>{error}</p>}
 
       <form
