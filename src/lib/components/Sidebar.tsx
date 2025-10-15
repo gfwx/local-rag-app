@@ -25,6 +25,7 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
+import path from "node:path/win32";
 
 interface Chat {
   id: string;
@@ -37,6 +38,7 @@ interface SidebarProps {
 
 export function ChatSidebar({ chats }: SidebarProps) {
   const [localChats, setLocalChats] = useState(chats || []);
+  const [currentPath, setCurrentPath] = useState<string | null>(usePathname());
   const [editingId, setEditingId] = useState<string | null>(null);
   const [newTitle, setNewTitle] = useState("");
   const router = useRouter();
@@ -46,6 +48,10 @@ export function ChatSidebar({ chats }: SidebarProps) {
   useEffect(() => {
     setLocalChats(chats || []);
   }, [chats]);
+
+  useEffect(() => {
+    setCurrentPath(pathname);
+  }, [pathname]);
 
   const createNewChat = async () => {
     try {
@@ -158,6 +164,11 @@ export function ChatSidebar({ chats }: SidebarProps) {
                       <Link href={`/chat/${chat.id}`}>
                         {editingId === chat.id ? (
                           <Input
+                            className={
+                              currentPath && currentPath.includes(chat.id)
+                                ? "bg-blue-500 text-white"
+                                : ""
+                            }
                             value={newTitle}
                             onChange={(e) => setNewTitle(e.target.value)}
                             onBlur={() => saveRename(chat.id)}
@@ -171,7 +182,15 @@ export function ChatSidebar({ chats }: SidebarProps) {
                             autoFocus
                           />
                         ) : (
-                          <SidebarMenuButton>{chat.title}</SidebarMenuButton>
+                          <SidebarMenuButton
+                            className={
+                              pathname === `/chat/${chat.id}`
+                                ? "bg-blue-100"
+                                : ""
+                            }
+                          >
+                            {chat.title}
+                          </SidebarMenuButton>
                         )}
                       </Link>
                     </ContextMenuTrigger>
