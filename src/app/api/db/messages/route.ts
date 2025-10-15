@@ -26,7 +26,7 @@ export async function GET(req: NextRequest) {
         { user_id: userId, chat_id: chatId },
         { projection: { message: 1 } }, // Only return the UIMessage object
       )
-      .sort({ "message.id": 1 }) // Sort by original message id for order (e.g., "1", "2", ...)
+      .sort({ created_at: 1 }) // Sort by timestamp
       .toArray();
 
     // Extract the message objects into array
@@ -46,7 +46,8 @@ export async function POST(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("user_id");
   const chatId = searchParams.get("chat_id");
-  const { message } = await req.json();
+
+  const { message, created_at } = await req.json();
 
   if (!userId || !chatId || !message) {
     return NextResponse.json(
@@ -63,6 +64,8 @@ export async function POST(req: NextRequest) {
     user_id: userId,
     chat_id: chatId,
     message,
+    created_at: created_at,
+    updated_at: created_at,
   });
 
   return NextResponse.json({ message: message });
@@ -92,7 +95,15 @@ export async function PATCH(req: NextRequest) {
     // Find and update the specific message
     const result = await collection.findOneAndUpdate(
       { user_id: userId, chat_id: chatId, "message.id": messageId },
-      { $set: { message: { ...update, id: messageId } } }, // Merge partial, preserve id
+      {
+        $set: {
+          message: {
+            ...update,
+            id: messageId,
+            updated_at: new Date(),
+          },
+        },
+      }, // Merge partial, preserve id
       { returnDocument: "after", projection: { message: 1 } }, // Return updated doc
     );
 

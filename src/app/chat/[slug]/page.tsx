@@ -30,6 +30,7 @@ export default function Chat() {
   const [previousScrollTop, setPreviousScrollTop] = useState(0);
   const { messages, sendMessage, setMessages, status, stop } = useChat({
     onFinish: async ({ message: assistantMessage }) => {
+      const created_at = new Date();
       await fetch(`/api/db/messages?user_id=${user.id}&chat_id=${chatId}`, {
         method: "POST",
         headers: {
@@ -39,6 +40,8 @@ export default function Chat() {
           message: assistantMessage,
           user_id: user.id,
           chat_id: chatId,
+          created_at,
+          updated_at: created_at,
         }),
       }).catch(console.error);
     },
@@ -89,6 +92,7 @@ export default function Chat() {
   }, [messages, isAtBottom]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const created_at = new Date();
     e.preventDefault();
     setError(null);
     const userInput = input;
@@ -109,8 +113,8 @@ export default function Chat() {
           },
           body: JSON.stringify({
             message: userMessage,
-            user_id: user.id,
-            chat_id: chatId,
+            created_at: created_at,
+            updated_at: created_at,
           }),
         }).catch(console.error);
       }
@@ -125,6 +129,8 @@ export default function Chat() {
     e.preventDefault();
     await stop();
   };
+
+  console.log(messages);
 
   return (
     <div className="flex items-center flex-col w-full max-w-4xl pt-4 mx-auto stretch gap-8">
