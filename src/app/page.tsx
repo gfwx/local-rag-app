@@ -11,7 +11,6 @@ export default function Chat() {
         <Image src={Logomark} alt="Logo" width={200} height={200} />
         <Image src={Wordmark} alt="Wordmark" width={400} height={100} />
       </div>
-      <h1 className="text-2xl tracking-tight font-bold">Chat Demo</h1>
     </main>
   );
 }
